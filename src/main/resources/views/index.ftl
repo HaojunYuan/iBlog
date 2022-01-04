@@ -1,0 +1,2 @@
+
+hello index ${user.username}
