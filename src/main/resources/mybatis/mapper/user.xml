@@ -9,7 +9,33 @@
         <result property="password" column="password" />
         <result property="age" column="age" />
         <result property="nickName" column="nick_name" />
+        <result property="deletedAt" column="deleted_at" />
     </resultMap>
+
+    <select id="findByQuery" resultMap="UserMap">
+        select * from user
+        where deleted_at is null
+        <if test="null != s and '' != s">
+            and (
+                username like '%${s}%'
+                or nick_name like '%${s}%'
+            )
+        </if>
+        <if test="limit > 0">
+            limit #{begin},#{limit}
+        </if>
+    </select>
+
+    <select id="countByQuery" resultType="java.lang.Long">
+        select count(*) from user
+        where deleted_at is null
+        <if test="null != s and '' != s">
+            and (
+            username like '%${s}%'
+            or nick_name like '%${s}%'
+            )
+        </if>
+    </select>
 
     <select id="findAllUser" resultMap="UserMap">
         select * from user

@@ -26,23 +26,26 @@ public class ApiResponse<T> {
         return message;
     }
 
-    public void setMessage(String message) {
+    public ApiResponse<T> message(String message) {
         this.message = message;
+        return this;
     }
 
     public boolean isSuccess() {
         return success;
     }
 
-    public void setSuccess(boolean success) {
+    public ApiResponse<T> success(boolean success) {
         this.success = success;
+        return this;
     }
 
     public T getResult() {
         return result;
     }
 
-    public void setResult(T result) {
+    public ApiResponse<T> result(T result) {
         this.result = result;
+        return this;
     }
 }

@@ -1,0 +1,228 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- 日志级别从低到高分为TRACE < DEBUG < INFO < WARN < ERROR < FATAL，如果设置为WARN，则低于WARN的信息都不会输出 -->
+<!-- scan:当此属性设置为true时，配置文件如果发生改变，将会被重新加载，默认值为true -->
+<!-- scanPeriod:设置监测配置文件是否有修改的时间间隔，如果没有给出时间单位，默认单位是毫秒。当scan为true时，此属性生效。默认的时间间隔为1分钟。 -->
+<!-- debug:当此属性设置为true时，将打印出logback内部日志信息，实时查看logback运行状态。默认值为false。 -->
+<configuration scan="true" scanPeriod="60 seconds" debug="false">
+
+    <!--<include resource="org/springframework/boot/logging/logback/base.xml" />-->
+    <!--    <include resource="org/springframework/boot/logging/logback/defaults.xml" />-->
+    <!--    <include resource="org/springframework/boot/logging/logback/console-appender.xml" />-->
+
+
+    <!--定义日志文件的存储地址 -->
+    <contextName>ks-application</contextName>
+    <property name="log.path" value="../logs"/>
+    <property name="log.maxHistory" value="15"/>
+    <property name="log.colorPattern"
+              value="%d{yyyy-MM-dd HH:mm:ss} | %highlight(%-5level) | %boldYellow(%thread) | %boldGreen(%logger) | %msg%n"/>
+    <property name="log.pattern"
+              value="%d{yyyy-MM-dd HH:mm:ss.SSS} %contextName [%thread] %-5level %logger{36} - %msg%n"/>
+
+    <!--输出到控制台-->
+    <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
+        <!--此日志appender是为开发使用，只配置最底级别，控制台输出的日志级别是大于或等于此级别的日志信息-->
+        <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+            <level>debug</level>
+        </filter>
+        <encoder>
+            <pattern>${log.colorPattern}</pattern>
+            <!-- 设置字符集 -->
+            <charset>UTF-8</charset>
+        </encoder>
+    </appender>
+
+    <!-- 控制台输出 -->
+    <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+            <!--格式化输出：%d表示日期，%thread表示线程名，%-5level：级别从左显示5个字符宽度%msg：日志消息，%n是换行符 -->
+            <pattern>${log.colorPattern}</pattern>
+        </encoder>
+    </appender>
+
+    <!-- 按照每天生成日志文件 -->
+    <appender name="FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+            <fileNamePattern>${log.path}/app.%d{yyyy-MM-dd}.%i.log.gz</fileNamePattern>
+            <maxFileSize>100MB</maxFileSize>
+            <maxHistory>30</maxHistory>
+        </rollingPolicy>
+        <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+            <!--格式化输出：%d表示日期，%thread表示线程名，%-5level：级别从左显示5个字符宽度%msg：日志消息，%n是换行符 -->
+            <pattern>${log.pattern}</pattern>
+        </encoder>
+        <!--日志文件最大的大小 -->
+        <triggeringPolicy class="ch.qos.logback.core.rolling.SizeBasedTriggeringPolicy">
+            <MaxFileSize>100MB</MaxFileSize>
+        </triggeringPolicy>
+    </appender>
+
+    <!-- 生成html格式日志开始 -->
+    <appender name="HTML" class="ch.qos.logback.core.FileAppender">
+        <!-- 过滤器，只记录WARN级别的日志 -->
+        <!-- <filter class="ch.qos.logback.classic.filter.LevelFilter"> <level>info</level>
+            <onMatch>ACCEPT</onMatch> <onMismatch>DENY</onMismatch> </filter>
+        -->
+        <encoder class="ch.qos.logback.core.encoder.LayoutWrappingEncoder">
+            <layout class="ch.qos.logback.classic.html.HTMLLayout">
+                <pattern>%p%d%msg%M%F{32}%L</pattern>
+            </layout>
+        </encoder>
+        <file>${log.path}/app-error-log.html</file>
+    </appender>
+    <!-- 生成html格式日志结束 -->
+
+    <!-- 每天生成一个html格式的日志开始 -->
+    <appender name="FILE_HTML" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <!--日志文件输出的文件名 -->
+            <FileNamePattern>${log.path}/app.%d{yyyy-MM-dd}.html
+            </FileNamePattern>
+            <!--日志文件保留天数 -->
+            <MaxHistory>30</MaxHistory>
+        </rollingPolicy>
+        <encoder class="ch.qos.logback.core.encoder.LayoutWrappingEncoder">
+            <layout class="ch.qos.logback.classic.html.HTMLLayout">
+                <pattern>%p%d%msg%M%F{32}%L</pattern>
+            </layout>
+        </encoder>
+        <!--日志文件最大的大小 -->
+        <triggeringPolicy class="ch.qos.logback.core.rolling.SizeBasedTriggeringPolicy">
+            <MaxFileSize>10MB</MaxFileSize>
+        </triggeringPolicy>
+    </appender>
+    <!-- 每天生成一个html格式的日志结束 -->
+
+
+    <!--
+        <logger>用来设置某一个包或者具体的某一个类的日志打印级别、
+        以及指定<appender>。<logger>仅有一个name属性，
+        一个可选的level和一个可选的addtivity属性。
+        name:用来指定受此logger约束的某一个包或者具体的某一个类。
+        level:用来设置打印级别，大小写无关：TRACE, DEBUG, INFO, WARN, ERROR, ALL 和 OFF，
+              还有一个特俗值INHERITED或者同义词NULL，代表强制执行上级的级别。
+              如果未设置此属性，那么当前logger将会继承上级的级别。
+        addtivity:是否向上级logger传递打印信息。默认是true。
+    -->
+    <!--<logger name="org.springframework.web" level="info"/>-->
+    <!--<logger name="org.springframework.scheduling.annotation.ScheduledAnnotationBeanPostProcessor" level="INFO"/>-->
+    <!--
+        使用mybatis的时候，sql语句是debug下才会打印，而这里我们只配置了info，所以想要查看sql语句的话，有以下两种操作：
+        第一种把<root level="info">改成<root level="DEBUG">这样就会打印sql，不过这样日志那边会出现很多其他消息
+        第二种就是单独给dao下目录配置debug模式，代码如下，这样配置sql语句会打印，其他还是正常info级别：
+     -->
+
+
+    <!--
+        root节点是必选节点，用来指定最基础的日志输出级别，只有一个level属性
+        level:用来设置打印级别，大小写无关：TRACE, DEBUG, INFO, WARN, ERROR, ALL 和 OFF，
+        不能设置为INHERITED或者同义词NULL。默认是DEBUG
+        可以包含零个或多个元素，标识这个appender将会添加到这个logger。
+    -->
+    <!-- 日志输出级别 -->
+    <springProfile name="dev">
+        <root level="DEBUG">
+            <appender-ref ref="CONSOLE"/>
+            <appender-ref ref="FILE"/>
+        </root>
+        <logger name="com.kernelstudio" level="DEBUG"/>
+        <logger name="org.springframework.web" level="DEBUG"/>
+        <logger name="org.springframework.jndi" level="INFO"/>
+        <logger name="org.springframework.beans" level="INFO"/>
+        <logger name="org.springframework.core" level="INFO"/>
+        <logger name="org.springframework.cglib" level="INFO"/>
+        <logger name="org.springframework.core" level="INFO"/>
+        <logger name="org.springframework.data" level="INFO"/>
+        <logger name="io.lettuce" level="INFO"/>
+        <logger name="io.netty" level="INFO"/>
+        <logger name="org.hibernate.validator.internal" level="INFO"/>
+        <logger name="org.springframework.session.web.http.SessionRepositoryFilter.SESSION_LOGGER" level="INFO"/>
+        <logger name="org.springframework.security.web.util.matcher.AntPathRequestMatcher" level="INFO"/>
+        <logger name="org.springframework.web.servlet.handler.SimpleUrlHandlerMapping" level="INFO"/>
+        <logger name="org.springframework.aop.framework.CglibAopProxy" level="ERROR"/>
+        <logger name="org.springframework.boot.autoconfigure.logging.ConditionEvaluationReportLoggingListener" level="INFO"/>
+
+        <!--myibatis log configure -->
+        <logger name="com.apache.ibatis" level="DEBUG"/>
+        <logger name="java.sql.Connection" level="DEBUG"/>
+        <logger name="java.sql.Statement" level="DEBUG"/>
+        <logger name="java.sql.PreparedStatement" level="DEBUG"/>
+    </springProfile>
+
+    <springProfile name="test">
+        <root level="DEBUG">
+            <appender-ref ref="CONSOLE"/>
+            <appender-ref ref="FILE"/>
+        </root>
+        <logger name="com.kernelstudio" level="DEBUG"/>
+        <logger name="org.springframework.web" level="DEBUG"/>
+        <logger name="org.springframework.jndi" level="INFO"/>
+        <logger name="org.springframework.beans" level="INFO"/>
+        <logger name="org.springframework.core" level="INFO"/>
+        <logger name="org.springframework.cglib" level="INFO"/>
+        <logger name="org.springframework.core" level="INFO"/>
+        <logger name="org.springframework.data" level="INFO"/>
+        <logger name="io.lettuce" level="INFO"/>
+        <logger name="io.netty" level="INFO"/>
+        <logger name="org.hibernate.validator.internal" level="INFO"/>
+        <logger name="org.springframework.session.web.http.SessionRepositoryFilter.SESSION_LOGGER" level="INFO"/>
+        <logger name="org.springframework.security.web.util.matcher.AntPathRequestMatcher" level="INFO"/>
+        <logger name="org.springframework.web.servlet.handler.SimpleUrlHandlerMapping" level="INFO"/>
+        <logger name="org.springframework.aop.framework.CglibAopProxy" level="ERROR"/>
+        <logger name="org.springframework.boot.autoconfigure.logging.ConditionEvaluationReportLoggingListener" level="INFO"/>
+
+        <!--myibatis log configure -->
+        <logger name="com.apache.ibatis" level="DEBUG"/>
+        <logger name="java.sql.Connection" level="DEBUG"/>
+        <logger name="java.sql.Statement" level="DEBUG"/>
+        <logger name="java.sql.PreparedStatement" level="DEBUG"/>
+    </springProfile>
+
+
+    <springProfile name="local">
+        <root level="DEBUG">
+            <appender-ref ref="CONSOLE"/>
+            <appender-ref ref="FILE"/>
+        </root>
+        <logger name="com.kernelstudio" level="DEBUG"/>
+        <logger name="org.springframework.web" level="DEBUG"/>
+        <logger name="org.springframework.jndi" level="INFO"/>
+        <logger name="org.springframework.beans" level="INFO"/>
+        <logger name="org.springframework.core" level="INFO"/>
+        <logger name="org.springframework.cglib" level="INFO"/>
+        <logger name="org.springframework.core" level="INFO"/>
+        <logger name="org.springframework.data" level="INFO"/>
+        <logger name="io.lettuce" level="INFO"/>
+        <logger name="io.netty" level="INFO"/>
+        <logger name="org.hibernate.validator.internal" level="INFO"/>
+        <logger name="org.springframework.session.web.http.SessionRepositoryFilter.SESSION_LOGGER" level="INFO"/>
+        <logger name="org.springframework.security.web.util.matcher.AntPathRequestMatcher" level="INFO"/>
+        <logger name="org.springframework.web.servlet.handler.SimpleUrlHandlerMapping" level="INFO"/>
+        <logger name="org.springframework.aop.framework.CglibAopProxy" level="ERROR"/>
+        <logger name="org.springframework.boot.autoconfigure.logging.ConditionEvaluationReportLoggingListener" level="INFO"/>
+
+        <!--myibatis log configure -->
+        <logger name="com.apache.ibatis" level="DEBUG"/>
+        <logger name="java.sql.Connection" level="DEBUG"/>
+        <logger name="java.sql.Statement" level="DEBUG"/>
+        <logger name="java.sql.PreparedStatement" level="DEBUG"/>
+    </springProfile>
+
+    <!--生产环境:输出到文件-->
+    <springProfile name="prod">
+        <root level="INFO">
+            <appender-ref ref="CONSOLE"/>
+            <appender-ref ref="FILE"/>
+<!--            <appender-ref ref="HTML"/>-->
+<!--            <appender-ref ref="FILE_HTML"/>-->
+        </root>
+        <logger name="com.kernelstudio" level="INFO"/>
+        <logger name="org.springframework" level="INFO"/>
+        <!--myibatis log configure -->
+        <logger name="com.apache.ibatis" level="INFO"/>
+        <logger name="java.sql.Connection" level="INFO"/>
+        <logger name="java.sql.Statement" level="INFO"/>
+        <logger name="java.sql.PreparedStatement" level="INFO"/>
+    </springProfile>
+
+</configuration>

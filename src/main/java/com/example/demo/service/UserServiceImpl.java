@@ -9,6 +9,8 @@ package com.example.demo.service;
  */
 
 import com.example.demo.entity.User;
+import com.example.demo.query.ListableUserQuery;
+import com.example.demo.query.UserQuery;
 import com.example.demo.respsitory.UserRepository;
 import org.springframework.stereotype.Service;
 
@@ -21,6 +23,20 @@ public class UserServiceImpl implements UserService {
 
     public UserServiceImpl(UserRepository userRepository) {
         this.userRepository = userRepository;
+    }
+
+    @Override
+    public ListableUserQuery findByQuery(ListableUserQuery query) {
+        long total = countByQuery(query);
+        if (total>0){
+            query.total(total).items(userRepository.findByQuery(query));
+        }
+        return query;
+    }
+
+    @Override
+    public long countByQuery(ListableUserQuery query) {
+        return userRepository.countByQuery(query);
     }
 
     @Override

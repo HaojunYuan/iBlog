@@ -1,5 +1,7 @@
 package com.example.demo.entity;
 
+import java.util.Date;
+
 public class User {
 
     private int id;
@@ -7,6 +9,7 @@ public class User {
     private int age;
     private String nickName;
     private String password;
+    private Date deleteAt;
 
     public User() {
     }
@@ -55,5 +58,13 @@ public class User {
 
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    public Date getDeleteAt() {
+        return deleteAt;
+    }
+
+    public void setDeleteAt(Date deleteAt) {
+        this.deleteAt = deleteAt;
     }
 }

@@ -1,6 +1,8 @@
 package com.example.demo.respsitory;
 
 import com.example.demo.entity.User;
+import com.example.demo.query.ListableUserQuery;
+import com.example.demo.query.UserQuery;
 import org.apache.ibatis.session.SqlSession;
 import org.mybatis.spring.SqlSessionTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,6 +19,16 @@ public class UserRepositoryImpl implements UserRepository {
 
     public UserRepositoryImpl(SqlSession sqlSession) {
         this.sqlSession = sqlSession;
+    }
+
+    @Override
+    public List<User> findByQuery(ListableUserQuery query) {
+        return sqlSession.selectList("User.findByQuery",query);
+    }
+
+    @Override
+    public long countByQuery(ListableUserQuery query) {
+        return sqlSession.selectOne("User.countByQuery",query);
     }
 
     @Override
