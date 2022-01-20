@@ -2,7 +2,6 @@ package com.example.demo.respsitory;
 
 import com.example.demo.entity.User;
 import com.example.demo.query.ListableUserQuery;
-import com.example.demo.query.UserQuery;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -18,5 +17,13 @@ public interface UserRepository {
 
     User findOneById(int id);
 
-    User findOneByUsernameAndAge(String username, int age);
+    User findOneByUsername(String username);
+
+    boolean deleteUserById(int id);
+
+    boolean has(User user);
+
+    boolean createNewUser(User user);
+
+    boolean editUser(User user);
 }

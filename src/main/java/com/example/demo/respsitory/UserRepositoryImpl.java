@@ -2,15 +2,10 @@ package com.example.demo.respsitory;
 
 import com.example.demo.entity.User;
 import com.example.demo.query.ListableUserQuery;
-import com.example.demo.query.UserQuery;
 import org.apache.ibatis.session.SqlSession;
-import org.mybatis.spring.SqlSessionTemplate;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 @Repository
 public class UserRepositoryImpl implements UserRepository {
@@ -42,15 +37,34 @@ public class UserRepositoryImpl implements UserRepository {
     }
 
     @Override
-    public User findOneByUsernameAndAge(String username, int age) {
-//        Map<String,Object> map = new HashMap<>();
+    public User findOneByUsername(String username) {
+        //        Map<String,Object> map = new HashMap<>();
 //        map.put("username",username);
 //        map.put("age",age);
 //        return sqlSessionTemplate.selectOne("User.findOneByUsernameAndAge",map);
 
         User user = new User();
         user.setUsername(username);
-        user.setAge(age);
-        return sqlSession.selectOne("User.findOneByUsernameAndAge",user);
+        return sqlSession.selectOne("User.findOneByUsername",user);
+    }
+
+    @Override
+    public boolean deleteUserById(int id) {
+        return sqlSession.update("User.deleteUserById",id)>0;
+    }
+
+    @Override
+    public boolean has(User user) {
+        return (Integer) sqlSession.selectOne("User.has",user)>0;
+    }
+
+    @Override
+    public boolean createNewUser(User user) {
+        return sqlSession.insert("User.createNewUser",user)>0;
+    }
+
+    @Override
+    public boolean editUser(User user) {
+        return sqlSession.update("User.editUser", user)>0;
     }
 }

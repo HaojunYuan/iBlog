@@ -13,10 +13,7 @@ import com.example.demo.entity.User;
 import com.example.demo.query.ListableUserQuery;
 import com.example.demo.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -42,6 +39,26 @@ public class UserController {
         User user = userService.findOneById(id);
         return new ApiResponse<>(true, user);
     }
+
+    @GetMapping("/users/{id}/delete")
+    public ApiResponse<String> deleteUserById(@PathVariable int id){
+        boolean deleted= userService.deleteUserById(id);
+        return new ApiResponse<>(deleted,deleted ? "Success" : "Fail");
+    }
+
+    @PostMapping("/users/create")
+    public ApiResponse<String> createNewUser(User user){
+        boolean created= userService.createNewUser(user);
+        return new ApiResponse<>(created,created ? "Success" : "Fail");
+    }
+
+    @RequestMapping("/users/{id}/edit")
+    public ApiResponse<String> editUser(User user){
+        boolean edited= userService.editUser(user);
+        return new ApiResponse<>(edited,edited ? "Success" : "Fail");
+    }
+
+
 
 
 }

@@ -4,6 +4,7 @@ import App from './App';
 import 'ant-design-vue/dist/antd.css';
 import VueRouter from 'vue-router';
 import routers from './config/router'
+
 Vue.config.productionTip = false;
 
 Vue.use(Antd);
@@ -15,8 +16,16 @@ const router = new VueRouter({
   scrollBehavior:()=>({y:0}),
   routes: [
     {
+      path: '/admin/dashboard',
+      component: ()=> import('@/views/dashboard.vue')
+    },
+    {
       path: '/admin/user',
       component: ()=> import('@/views/user/users.vue')
+    },
+    {
+      path: '/admin/post',
+      component: ()=> import('@/views/post/posts.vue')
     }
   ]
 })

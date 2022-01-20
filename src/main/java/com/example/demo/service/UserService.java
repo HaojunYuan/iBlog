@@ -2,7 +2,6 @@ package com.example.demo.service;
 
 import com.example.demo.entity.User;
 import com.example.demo.query.ListableUserQuery;
-import com.example.demo.query.UserQuery;
 
 import java.util.List;
 
@@ -16,5 +15,11 @@ public interface UserService {
 
     User findOneById(int id);
 
-    User findOneByUsernameAndAge(String username, int age);
+    User findOneByUsername(String username);
+
+    boolean deleteUserById(int id);
+
+    boolean createNewUser(User user);
+
+    boolean editUser(User user);
 }

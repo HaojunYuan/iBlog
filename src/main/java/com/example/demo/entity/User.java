@@ -1,5 +1,9 @@
 package com.example.demo.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 import java.util.Date;
 
 public class User {
@@ -9,16 +13,19 @@ public class User {
     private int age;
     private String nickName;
     private String password;
-    private Date deleteAt;
+
+    private String deletedAt;
 
     public User() {
     }
 
-    public User(int id, String username, int age) {
-        this.id = id;
+    public User(String username, String password, String nickName) {
+
         this.username = username;
-        this.age = age;
+        this.password = password;
+        this.nickName = nickName;
     }
+
 
     public int getId() {
         return id;
@@ -60,11 +67,11 @@ public class User {
         this.password = password;
     }
 
-    public Date getDeleteAt() {
-        return deleteAt;
+    public String getDeletedAt() {
+        return deletedAt;
     }
 
-    public void setDeleteAt(Date deleteAt) {
-        this.deleteAt = deleteAt;
+    public void setDeletedAt(String deletedAt) {
+        this.deletedAt = deletedAt;
     }
 }

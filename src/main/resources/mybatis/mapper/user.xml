@@ -54,4 +54,31 @@
         limit 1
     </select>
 
+    <update id="deleteUserById">
+        update user
+        set deleted_at=NOW()
+        where id=#{id}
+    </update>
+
+    <select id="has" resultType="java.lang.Integer">
+        select count(*) from user
+        where username=#{username}
+        <if test="id>0">
+           and id!=#{id}
+        </if>
+    </select>
+
+    <insert id="createNewUser">
+        INSERT INTO user(username, password, nick_name)
+        Values (#{username},#{password}, #{nickName})
+    </insert>
+
+    <update id="editUser">
+        update user
+        set username=#{username},
+        password=#{password},
+        nick_name=#{nickName}
+        where id=#{id}
+    </update>
+
 </mapper>

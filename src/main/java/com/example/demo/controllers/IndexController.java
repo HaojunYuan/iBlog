@@ -10,7 +10,7 @@ public class IndexController {
 
     @RequestMapping("/")
     public String index(Model model) {
-        User user = new User(1,"user",1);
+        User user = new User("user","111","111");
         model.addAttribute("user",user);
         return "index";
     }

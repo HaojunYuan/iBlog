@@ -10,7 +10,6 @@ package com.example.demo.service;
 
 import com.example.demo.entity.User;
 import com.example.demo.query.ListableUserQuery;
-import com.example.demo.query.UserQuery;
 import com.example.demo.respsitory.UserRepository;
 import org.springframework.stereotype.Service;
 
@@ -60,7 +59,31 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public User findOneByUsernameAndAge(String username, int age) {
-        return userRepository.findOneByUsernameAndAge(username,age);
+    public User findOneByUsername(String username) {
+        return userRepository.findOneByUsername(username);
+    }
+
+    @Override
+    public boolean deleteUserById(int id) {
+        return userRepository.deleteUserById(id);
+    }
+
+    @Override
+    public boolean createNewUser(User user) {
+        check(user);
+        return userRepository.createNewUser(user);
+    }
+
+    @Override
+    public boolean editUser(User user) {
+        check(user);
+        return userRepository.editUser(user);
+    }
+
+    private void check(User user) {
+        boolean has = userRepository.has(user);
+        if (has){
+            throw new IllegalArgumentException("User exists.");
+        }
     }
 }
