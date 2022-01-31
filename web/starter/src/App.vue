@@ -15,12 +15,12 @@
             <span  class="nav-text">Users</span>
           </a-menu-item>
           <a-menu-item key="2" @click="()=> $router.push({path: '/admin/post'})">
-            <a-icon type="fast-backward" />
+            <a-icon type="file-text" />
             <span class="nav-text">Posts</span>
           </a-menu-item>
           <a-menu-item key="3">
-            <a-icon type="upload" />
-            <span class="nav-text">nav 3</span>
+            <a-icon type="setting" />
+            <span class="nav-text">Settings</span>
           </a-menu-item>
 
         </a-menu>
